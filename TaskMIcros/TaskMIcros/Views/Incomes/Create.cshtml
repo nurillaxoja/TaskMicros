@@ -1,0 +1,82 @@
+﻿@model TaskMIcros.Models.Income
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Добавить новый доход</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group" >
+                <label asp-for="Salary" class="control-label"></label>
+                <input asp-for="Salary" class="form-control" />
+                <span asp-validation-for="Salary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rent" class="control-label"></label>
+                <input asp-for="Rent" class="form-control" />
+                <span asp-validation-for="Rent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Other" class="control-label"></label>
+                <input asp-for="Other" class="form-control" />
+                <span asp-validation-for="Other" class="text-danger"></span>
+            </div>
+            
+            @*<div class="form-group">
+                <label asp-for="Total" class="control-label"></label>
+                <input asp-for="Total" class="form-control" />
+                <span asp-validation-for="Total" class="text-danger"></span>
+            </div>*@
+
+            <div class="form-group">
+                <label asp-for="IncomeDate" class="control-label"> </label>
+                <input asp-for="IncomeDate" class="form-control" />
+                <span asp-validation-for="IncomeDate" class="text-danger"></span>
+            </div>
+
+            @*chnages*@
+            <div class="form-group">
+                <label asp-for="IncomeLastDate" class="control-label"></label>
+                <input asp-for="IncomeLastDate" class="form-control" />
+                <span asp-validation-for="IncomeLastDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Commentary" class="control-label"></label>
+                <input asp-for="Commentary" class="form-control" />
+                <span asp-validation-for="Commentary" class="text-danger"></span>
+            </div>
+
+            @*chnages*@
+
+
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            
+            <div style="font-size:15px !important;">
+                @Html.ValidationMessage("Error", new { @class = "text-danger" })
+            </div>
+
+            
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

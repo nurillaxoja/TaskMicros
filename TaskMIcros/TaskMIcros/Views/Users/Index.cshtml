@@ -1,0 +1,155 @@
+﻿@model IEnumerable<TaskMIcros.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Пользователи</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+@*<p>Kendo Ui version <strong id="kendoVersion"></strong></p>*@
+
+<div id="gridKendo"></div>
+
+
+
+@*chart*@
+
+<input id="ID" value="Load Graph" type="button" />
+<br />
+
+<div>
+    <canvas id="myChart" style="max-width:400px;max-height:400px"></canvas>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#ID").click(function () {
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "../Users/GetChartData",
+                    data: "",
+                    contextType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: OnSuccessResult,
+                    error: OnError
+                });
+
+            function OnSuccessResult(data) {
+                var _data = data;
+                var _chartLabels = _data[0];
+                var _charData = _data[1];
+
+                var barColors = ["green", "red"];
+
+                new Chart("myChart",
+                    {
+                        type: "pie",
+                        data: {
+                            labels: _chartLabels,
+                            datasets: [{
+                                backgroundColor: barColors,
+                                data: _charData
+                            }]
+                        }
+                    });
+
+            }
+            function OnError(err) {
+
+            }
+
+
+        });
+    });
+
+</script>
+
+@*chart*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#kendoVersion").text(kendo.version);
+
+
+        $("#gridKendo").kendoGrid({
+            dataSource: UsersHelper.gridDataSource(),
+            columns: UsersHelper.GenerateColumns(),
+            resizable: true,
+            filterable: true,
+            sortable: true,
+            editable: "inline",
+            selectable: "row",
+        });
+
+    });
+
+    var UsersHelper = {
+        GenerateColumns: function () { // main columns propertis
+            return columns = [
+                { field: "Id", title: "Id", width: 100, editable: false },
+                { field: "Name", title: "Name", width: 160, editable: false },
+                { field: "Income", title: "Total income", width: 100, editable: false },
+                { field: "Expenses", title: "Total expenses", width: 160, editable: false },
+                //{
+                //    command: [{
+                //        name: "edit",
+                //        text: {
+                //            edit: "Edit",
+                //            update: "Update",
+                //            cancel: "Cancel"
+                //        }
+                //    }],
+                //    width: 160
+                //}
+            ] 
+        },
+
+        gridDataSource: function () {
+            var gridDataSource = new kendo.data.DataSource({
+                schema: {
+                    data: "Items", total: "TotalCount",
+                    model: {
+                        id: "Id",
+                        fields: {
+                            Id: { type: "int", editable: false },
+                            Name: { type: "string" },
+                            Income: { type: "number", editable: false },
+                            Expenses: { type: "number", editable: false },
+                        }
+                    }
+                },
+                transport: {
+                    read: {
+                        url: '../Users/GetAllUsersJson',
+                        type: "GET",
+                        dataType: "json",
+                        contentType: "application/json; charser=utf-8"
+                    },
+                    update: {
+                        url: '../Users/UpdateUser',
+                        type: "POST",
+                    },
+
+                    parameterMap: function (options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return { models: kendo.stringify(options.models) };
+                        }
+                    }
+                },
+            });
+            return gridDataSource;
+        }, 
+
+    }
+
+</script>
